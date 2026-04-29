@@ -1,0 +1,86 @@
+services:
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "${VITE_PORT}:${VITE_PORT}"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - frontend-network
+    env_file:
+      - .env
+
+  gateway:
+    container_name: gateway
+    build: ./backend/gateway
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    volumes:
+      - ./backend/gateway:/app
+      - ./backend/helpers:/app/helpers
+      - ./backend/constants:/app/constants
+      - /app/node_modules
+    networks:
+      - backend-network
+      - frontend-network
+    env_file:
+      - .env
+
+  main-service:
+    container_name: main-service
+    build: ./backend/mainService
+    ports:
+      - "${MAIN_SERVICE_PORT}:${MAIN_SERVICE_PORT}"
+    volumes:
+      - ./backend/mainService:/app
+      - ./backend/helpers:/app/helpers
+      - ./backend/constants:/app/constants
+      - /app/node_modules
+    networks:
+      - backend-network
+    env_file:
+      - .env
+  auth-service:
+    container_name: auth-service
+    build: ./backend/authService
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    volumes:
+      - ./backend/authService:/app
+      - ./backend/helpers:/app/helpers
+      - ./backend/constants:/app/constants
+      - /app/node_modules
+    networks:
+      - backend-network
+    env_file:
+      - .env
+
+  db:
+    container_name: db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  db-data:
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
