@@ -42,6 +42,8 @@ services:
       - backend-network
     env_file:
       - .env
+    environment:
+      NODE_OPTIONS: --preserve-symlinks
   auth-service:
     container_name: auth-service
     build: ./backend/authService
@@ -75,6 +77,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  prisma-studio:
+    image: node:lts-alpine
+    container_name: prisma-studio
+    working_dir: /usr/src/app/backend/mainService
+    volumes:
+      - .:/usr/src/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env
+    networks:
+      - backend-network
 
 volumes:
   db-data:

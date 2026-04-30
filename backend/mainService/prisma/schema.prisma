@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Field {
+  id       Int     @id @default(autoincrement())
+  label    String
+  type     String
+  required Boolean
+  options  String?
+  formId   Int
+  form     Form    @relation(fields: [formId], references: [id])
+}
+
+model Form {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  fields      Field[]
+}

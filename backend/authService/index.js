@@ -1,5 +1,5 @@
 const express = require("express");
-const { requestLogger } = require("../helpers/middlewares/logger");
+const { requestLogger } = require("./helpers/middlewares/logger");
 
 const app = express();
 const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT || 3002;
