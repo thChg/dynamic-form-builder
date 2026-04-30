@@ -1,5 +1,6 @@
 .env
 **/node_modules
+**/generated
 
 # macOS
 .DS_Store

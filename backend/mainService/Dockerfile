@@ -8,8 +8,7 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 
 RUN npm install
-RUN npx prisma generate
 
 COPY . .
 
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm start"]

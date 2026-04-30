@@ -3,7 +3,7 @@ const CONSTANTS = require("../../constants/errorCode");
 const errorHandler = (err, req, res, next) => {
   const STATUSCODE = res.statusCode || 500;
   res.status(500);
-  
+
   switch (STATUSCODE) {
     case CONSTANTS.NOT_FOUND:
       res.json({
@@ -30,6 +30,7 @@ const errorHandler = (err, req, res, next) => {
       res.json({
         title: "VALIDATION_ERROR",
         message: err.message,
+        details: err.details || undefined,
         stackTrace: err.stack,
       });
       break;
