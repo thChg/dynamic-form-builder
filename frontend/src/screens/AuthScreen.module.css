@@ -1,0 +1,228 @@
+.screen {
+  --card-bg: #ffffff;
+  --muted: #6b6375;
+  --accent: #0ea5e9;
+  --accent-strong: #f43f5e;
+  --input-bg: #f3f4f6;
+  --shadow: 0 24px 60px rgba(15, 18, 24, 0.14);
+
+  min-height: 100vh;
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background: var(--bg);
+  background-image:
+    radial-gradient(
+      circle at top left,
+      rgba(249, 115, 22, 0.18),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(14, 165, 233, 0.16),
+      transparent 48%
+    );
+  transition:
+    background-color 0.35s ease,
+    background-image 0.35s ease;
+}
+
+.toolbar {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+:global(.dark) .screen {
+  --card-bg: #1f222b;
+  --muted: #9ca3af;
+  --accent: #38bdf8;
+  --accent-strong: #fb7185;
+  --input-bg: #2a2f3a;
+  --shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+
+  background-image:
+    radial-gradient(
+      circle at top left,
+      rgba(249, 115, 22, 0.12),
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(14, 165, 233, 0.12),
+      transparent 50%
+    );
+}
+
+.loginCard {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 44px;
+  width: min(520px, 100%);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 28px;
+  position: relative;
+  overflow: hidden;
+  animation: riseIn 0.9s ease both;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.loginCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 6px;
+  background: linear-gradient(
+    120deg,
+    #f97316,
+    var(--accent-strong),
+    var(--accent)
+  );
+}
+
+.cardHeader h2 {
+  margin: 0 0 6px;
+  font-size: 30px;
+}
+
+.cardHeader p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--muted);
+  transition: color 0.35s ease;
+}
+
+.loginForm {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--text-h);
+  transition: color 0.35s ease;
+}
+
+.field input {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: var(--input-bg);
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--text-h);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  transition-property: border-color, box-shadow, background-color, color;
+  transition-duration: 0.2s, 0.2s, 0.35s, 0.35s;
+  transition-timing-function: ease, ease, ease, ease;
+}
+
+.field input::placeholder {
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  transition: color 0.35s ease;
+}
+
+.checkbox input {
+  accent-color: var(--accent);
+}
+
+.textButton {
+  background: none;
+  border: none;
+  color: var(--accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.35s ease;
+}
+
+.textButton:hover {
+  text-decoration: underline;
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  transition-property: transform, box-shadow, background-color;
+  transition-duration: 0.2s, 0.2s, 0.35s;
+  transition-timing-function: ease, ease, ease;
+  border: none;
+  background: linear-gradient(120deg, #f97316, var(--accent-strong));
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.28);
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.footnote {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+  color: var(--muted);
+  transition: color 0.35s ease;
+}
+
+.footnote button {
+  background: none;
+  border: none;
+  color: var(--accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.35s ease;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .loginCard {
+    padding: 28px;
+  }
+}

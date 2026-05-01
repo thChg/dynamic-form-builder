@@ -1,29 +1,18 @@
 const express = require("express");
+const cors = require("cors");
 const { requestLogger } = require("./helpers/middlewares/logger");
 const errorHandler = require("./helpers/middlewares/errorHandler");
-const { prisma } = require("./helpers/database/prismaClient");
-const validateRequest = require("./helpers/middlewares/validateRequest");
+const authRoute = require("./routes/authRoute");
 
 const app = express();
 const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT || 3002;
-
+const FRONTEND_PORT = process.env.VITE_PORT;
+console.log(FRONTEND_PORT)
+app.use(cors({ origin: `http://localhost:${FRONTEND_PORT}` }));
 app.use(requestLogger);
 app.use(express.json());
 
-app.get("/data", validateRequest(), async (req, res) => {
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        email: "user@example.com",
-        password: "password123",
-        role: "ADMIN",
-      },
-    });
-    res.json({ message: "User created successfully!", data: newUser });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
+app.use(authRoute);
 
 app.use(errorHandler);
 

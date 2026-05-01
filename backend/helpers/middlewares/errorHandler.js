@@ -2,7 +2,6 @@ const CONSTANTS = require("../../constants/errorCode");
 
 const errorHandler = (err, req, res, next) => {
   const STATUSCODE = res.statusCode || 500;
-  res.status(500);
 
   switch (STATUSCODE) {
     case CONSTANTS.NOT_FOUND:

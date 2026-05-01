@@ -1,0 +1,8 @@
+.error {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #b91c1c;
+  background: color-mix(in srgb, #ef4444 18%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+}

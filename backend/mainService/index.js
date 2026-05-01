@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { z } = require("zod");
 const { requestLogger } = require("./helpers/middlewares/logger");
 const errorHandler = require("./helpers/middlewares/errorHandler");
@@ -7,6 +8,9 @@ const { prisma } = require("./helpers/database/prismaClient");
 
 const app = express();
 const MAIN_SERVICE_PORT = process.env.MAIN_SERVICE_PORT || 3001;
+const FRONTEND_PORT = process.env.VITE_PORT;
+
+app.use(cors({ origin: `http://localhost:${FRONTEND_PORT}` }));
 
 app.use(requestLogger);
 app.use(express.json());
