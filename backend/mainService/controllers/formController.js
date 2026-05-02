@@ -44,17 +44,19 @@ const createFormController = async (req, res) => {
 
 const getFormsController = async (req, res) => {
   try {
-    const { role } = req.user;
+    const { role, userId, adminId } = req.user;
     const conditions = {};
 
     if (role === "ADMIN") {
       conditions.where = {
+        ownerId: userId,
         status: {
           not: "DELETED",
         },
       };
     } else {
       conditions.where = {
+        ownerId: adminId,
         status: "PUBLISHED",
       };
     }
@@ -188,6 +190,103 @@ const updateFormController = async (req, res) => {
   }
 };
 
+const submitFormController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Prefer validated payloads set by middleware
+    const payload = req.validatedSimpleObject || req.body;
+
+    if (!payload || typeof payload !== "object") {
+      return res.status(400).json({ message: "Invalid submission payload" });
+    }
+
+    console.log("?///////", id);
+    const formId = parseInt(id);
+    if (Number.isNaN(formId)) {
+      return res.status(400).json({ message: "Invalid form id" });
+    }
+
+    // Build rows for FieldResponse: expect payload to be simple object { fieldId: value }
+    const rows = Object.entries(payload).map(([key, value]) => ({
+      fieldId: Number(key),
+      value: value === undefined || value === null ? "" : String(value),
+    }));
+
+    // Transaction: create submission, then create field responses
+    const result = await prisma.$transaction(async (tx) => {
+      const submission = await tx.submission.create({ data: { formId } });
+
+      if (rows.length > 0) {
+        // createMany for performance (no returned records)
+        const createManyData = rows.map((r) => ({
+          submissionId: submission.id,
+          fieldId: r.fieldId,
+          value: r.value,
+        }));
+        await tx.fieldResponse.createMany({ data: createManyData });
+      }
+
+      const saved = await tx.submission.findUnique({
+        where: { id: submission.id },
+        include: { responses: true },
+      });
+      return saved;
+    });
+
+    res.json({ message: "Form submitted successfully", data: result });
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+};
+
+const getMySubmissionsController = async (req, res) => {
+  try {
+    const { role, userId, adminId } = req.user;
+
+    const ownerId = role === "ADMIN" ? userId : adminId;
+
+    const submissions = await prisma.submission.findMany({
+      where: {
+        form: {
+          ownerId,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        form: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        responses: {
+          include: {
+            field: {
+              select: {
+                id: true,
+                label: true,
+                type: true,
+              },
+            },
+          },
+          orderBy: {
+            id: "asc",
+          },
+        },
+      },
+    });
+
+    res.json(submissions);
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   createFormController,
   getFormsController,
@@ -195,4 +294,6 @@ module.exports = {
   reorderFormsController,
   updateFormController,
   deleteFormController,
+  submitFormController,
+  getMySubmissionsController,
 };

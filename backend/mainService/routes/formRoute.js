@@ -6,11 +6,17 @@ const {
   reorderFormsController,
   updateFormController,
   deleteFormController,
+  submitFormController,
+  getMySubmissionsController,
 } = require("../controllers/formController");
-const validateRequest = require("../helpers/middlewares/validateRequest");
+const {
+  validateRequest,
+  validateWithDbConditions,
+} = require("../helpers/middlewares/validateRequest");
 const {
   createFormSchema,
   reorderFormsSchema,
+  updateFormSchema,
 } = require("../schemas/formSchema");
 const route = require("express").Router();
 
@@ -30,12 +36,21 @@ route.put(
 
 route.get("/", authenticateToken, getFormsController);
 
+route.get("/submissions", authenticateToken, getMySubmissionsController);
+
 route.get("/:id", authenticateToken, getFormByIdController);
+
+route.post(
+  "/:id/submit",
+  authenticateToken,
+  validateWithDbConditions("field"),
+  submitFormController,
+);
 
 route.put(
   "/:id",
   authenticateToken,
-  validateRequest(createFormSchema),
+  validateRequest(updateFormSchema),
   updateFormController,
 );
 

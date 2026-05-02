@@ -242,3 +242,147 @@
   align-items: center;
   justify-content: flex-end;
 }
+
+.employeeNotice {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.employeeSummary {
+  display: grid;
+  gap: 8px;
+}
+
+.employeeSummaryTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.employeeSummaryDescription {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.fieldNote {
+  font-size: 12px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.employeeFieldList {
+  display: grid;
+  gap: 10px;
+}
+
+.employeeFieldCard {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+}
+
+.employeeFieldCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.employeeFieldLabel {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.requiredMark {
+  margin-left: 6px;
+  color: #ef4444;
+}
+
+.employeeFieldType {
+  margin: 4px 0 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+
+.employeeConditionList {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.employeeConditionItem {
+  margin: 0;
+}
+
+.employeeControl {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 96%, transparent);
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--text-h);
+  min-height: 46px;
+  box-sizing: border-box;
+  appearance: none;
+}
+
+.employeeControl:focus {
+  outline: none;
+  border-color: color-mix(in srgb, #f97316 65%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, #f97316 18%, transparent);
+}
+
+.employeeControl::placeholder {
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+}
+
+.colorFieldWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.employeeColorControl {
+  width: 56px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.colorValue {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.employeeActionRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.employeeSubmitButton {
+  border: none;
+  background: linear-gradient(120deg, #f97316, #f43f5e);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}

@@ -36,4 +36,58 @@ const reorderForms = async (payload) => {
   }
 };
 
-export { createForm, getForms, deleteForm, reorderForms };
+const submitForm = async (formId, payload) => {
+  try {
+    const response = await apiPost(
+      `/api/main-service/forms/${formId}/submit`,
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getMySubmissions = async () => {
+  try {
+    const response = await apiGet("/api/main-service/forms/submissions");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateDraft = async (formId, formData) => {
+  try {
+    const response = await apiPut(`/api/main-service/forms/${formId}`, {
+      ...formData,
+      status: "DRAFT",
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const publishForm = async (formId, formData) => {
+  try {
+    const response = await apiPut(`/api/main-service/forms/${formId}`, {
+      ...formData,
+      status: "PUBLISHED",
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {
+  createForm,
+  getForms,
+  deleteForm,
+  reorderForms,
+  submitForm,
+  getMySubmissions,
+  updateDraft,
+  publishForm,
+};

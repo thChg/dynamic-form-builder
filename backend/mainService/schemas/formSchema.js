@@ -1,5 +1,37 @@
 const { z } = require("zod");
 
+const optionalDateCondition = z.preprocess(
+  (value) => {
+    if (value === "" || value === null || value === undefined) {
+      return undefined;
+    }
+
+    return value;
+  },
+  z.coerce
+    .date({
+      invalid_type_error: "Date condition must be a valid date.",
+    })
+    .optional(),
+);
+
+const optionsCondition = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  if (!value.trim()) {
+    return undefined;
+  }
+
+  try {
+    const parsedValue = JSON.parse(value);
+    return Array.isArray(parsedValue) ? parsedValue : value;
+  } catch (error) {
+    return value;
+  }
+}, z.array(z.string()).optional());
+
 const fieldConditionsSchema = z.object({
   maxLength: z
     .number({
@@ -11,16 +43,8 @@ const fieldConditionsSchema = z.object({
       invalid_type_error: "minLength must be a number.",
     })
     .optional(),
-  maxDate: z
-    .date({
-      invalid_type_error: "maxDate must be a date.",
-    })
-    .optional(),
-  minDate: z
-    .date({
-      invalid_type_error: "minDate must be a date.",
-    })
-    .optional(),
+  maxDate: optionalDateCondition,
+  minDate: optionalDateCondition,
   maxNumber: z
     .number({
       invalid_type_error: "maxNumber must be a number.",
@@ -36,7 +60,7 @@ const fieldConditionsSchema = z.object({
       invalid_type_error: "required must be a boolean.",
     })
     .optional(),
-  options: z.array(z.string()).optional(),
+  options: optionsCondition,
 });
 
 const fieldSchema = z.array(
@@ -73,6 +97,8 @@ const createFormSchema = z.object({
 
 const saveDraftSchema = createFormSchema.partial();
 
+const updateFormSchema = createFormSchema.partial();
+
 const reorderFormsSchema = z.object({
   published: z.array(
     z
@@ -94,4 +120,5 @@ const reorderFormsSchema = z.object({
   ),
 });
 
-module.exports = { createFormSchema, saveDraftSchema, reorderFormsSchema };
+
+module.exports = { createFormSchema, saveDraftSchema, reorderFormsSchema, updateFormSchema };

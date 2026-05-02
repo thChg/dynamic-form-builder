@@ -2,6 +2,7 @@ import { useAuth } from "./context/AuthContext.jsx";
 import AuthScreen from "./screens/AuthScreen.jsx";
 import FormsScreen from "./screens/FormsScreen.jsx";
 import FormDetailScreen from "./screens/FormDetailScreen.jsx";
+import SubmissionsScreen from "./screens/SubmissionsScreen.jsx";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -22,6 +23,14 @@ function App() {
         element={
           <ProtectedRoute>
             <FormDetailScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/forms/submissions"
+        element={
+          <ProtectedRoute>
+            <SubmissionsScreen />
           </ProtectedRoute>
         }
       />

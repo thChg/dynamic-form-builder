@@ -111,3 +111,35 @@
   width: 16px;
   height: 16px;
 }
+
+.conditionsDisplay {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.conditionItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.conditionKey {
+  font-weight: 600;
+  color: var(--text-h);
+  text-transform: capitalize;
+}
+
+.conditionValue {
+  color: var(--text);
+  font-family: "Courier New", monospace;
+}

@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { apiGet, apiPut } from "../apis/api.js";
-import FieldRow from "../components/FieldRow.jsx";
+import { apiGet } from "../apis/api.js";
 import styles from "./FormDetailScreen.module.css";
-import { fieldConfigurations } from "../constants/fieldConfiguration.jsx";
-import { createForm } from "../apis/mainServiceApi.js";
+import {
+  createForm,
+  submitForm,
+  updateDraft,
+  publishForm,
+} from "../apis/mainServiceApi.js";
 import Error from "../components/Error.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { getUserInfo } from "../apis/authServiceApi.js";
+import { fieldConfigurations } from "../constants/fieldConfiguration.jsx";
+import FormDetailAdminContent from "../components/FormDetailAdminContent.jsx";
+import FormDetailEmployeeContent from "../components/FormDetailEmployeeContent.jsx";
 
 function FormDetailScreen() {
   const navigate = useNavigate();
+  const { user: savedUser, setUser: setSavedUser } = useAuth();
   const { id } = useParams();
   const isNew = id === "new";
   const [formData, setFormData] = useState({
@@ -17,10 +25,48 @@ function FormDetailScreen() {
     description: "",
     fields: [],
   });
+  const [currentUser, setCurrentUser] = useState(savedUser);
   const [newFieldType, setNewFieldType] = useState("text");
   const [isLoading, setIsLoading] = useState(false);
+  const [isUserLoading, setIsUserLoading] = useState(!savedUser);
   const [error, setError] = useState(null);
   const [errorCode, setErrorCode] = useState(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadUser = async () => {
+      if (savedUser) {
+        setCurrentUser(savedUser);
+        setIsUserLoading(false);
+        return;
+      }
+
+      setIsUserLoading(true);
+
+      try {
+        const response = await getUserInfo();
+        if (!isActive) return;
+        setCurrentUser(response.data);
+        setSavedUser(response.data);
+      } catch (error) {
+        if (!isActive) return;
+        const message = error?.response?.data?.message;
+        const statusCode = error?.response?.status;
+        setError(message, statusCode);
+      } finally {
+        if (isActive) {
+          setIsUserLoading(false);
+        }
+      }
+    };
+
+    loadUser();
+
+    return () => {
+      isActive = false;
+    };
+  }, [savedUser, setSavedUser]);
 
   const handleFieldDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return;
@@ -56,22 +102,62 @@ function FormDetailScreen() {
     }));
   };
 
+  const handleFieldConditionsChange = (updatedField) => {
+    const fieldConfig = fieldConfigurations[updatedField.type] || {};
+    const nextConditions = Object.entries(updatedField.conditions || {}).reduce(
+      (accumulator, [key, value]) => {
+        if (key === "required") {
+          accumulator[key] = value;
+          return accumulator;
+        }
+
+        if (fieldConfig[key] === "date" && value) {
+          accumulator[key] = value instanceof Date ? value : new Date(value);
+          return accumulator;
+        }
+
+        accumulator[key] = value;
+        return accumulator;
+      },
+      {},
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      fields: prev.fields.map((item) =>
+        item.id === updatedField.id
+          ? { ...item, conditions: nextConditions }
+          : item,
+      ),
+    }));
+  };
+
+  const serializeFormData = () => {
+    return {
+      title: formData.title,
+      description: formData.description,
+      fields: formData.fields.map((field) => ({
+        ...field,
+        conditions: field.conditions
+          ? Object.entries(field.conditions).reduce((acc, [key, value]) => {
+              acc[key] = value instanceof Date ? value.toISOString() : value;
+              return acc;
+            }, {})
+          : null,
+      })),
+    };
+  };
+
   const handleCreateDraft = async () => {
     try {
+      const payload = serializeFormData();
       if (isNew) {
         await createForm({
-          title: formData.title,
-          description: formData.description,
-          fields: formData.fields,
+          ...payload,
           status: "DRAFT",
         });
       } else {
-        await apiPut(`/api/main-service/forms/${id}`, {
-          title: formData.title,
-          description: formData.description,
-          fields: formData.fields,
-          status: "DRAFT",
-        });
+        await updateDraft(id, payload);
       }
       navigate("/forms");
     } catch (error) {
@@ -83,21 +169,26 @@ function FormDetailScreen() {
 
   const handleCreateForm = async () => {
     try {
+      const payload = serializeFormData();
       if (isNew) {
         await createForm({
-          title: formData.title,
-          description: formData.description,
-          fields: formData.fields,
+          ...payload,
           status: "PUBLISHED",
         });
       } else {
-        await apiPut(`/api/main-service/forms/${id}`, {
-          title: formData.title,
-          description: formData.description,
-          fields: formData.fields,
-          status: "PUBLISHED",
-        });
+        await publishForm(id, payload);
       }
+      navigate("/forms");
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      const statusCode = error?.response?.status;
+      setError(message, statusCode);
+    }
+  };
+
+  const handleSubmitForm = async (responses) => {
+    try {
+      await submitForm(id, responses);
       navigate("/forms");
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -140,7 +231,7 @@ function FormDetailScreen() {
     };
   }, [id, isNew]);
 
-  if (isLoading) {
+  if (isLoading || isUserLoading) {
     return <div className={styles.screen}>Loading...</div>;
   }
 
@@ -167,129 +258,29 @@ function FormDetailScreen() {
           )}
         </div>
       </header>
-
       <Error message={error} statusCode={errorCode} />
-
-      <div className={styles.content}>
-        <div className={styles.section}>
-          <label className={styles.label}>
-            Title
-            <input
-              type="text"
-              value={formData.title}
-              disabled={formData.status === "PUBLISHED"}
-              onChange={(event) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  title: event.target.value,
-                }))
-              }
-            />
-          </label>
-
-          <label className={styles.label}>
-            Description
-            <textarea
-              rows={4}
-              value={formData.description}
-              disabled={formData.status === "PUBLISHED"}
-              onChange={(event) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  description: event.target.value,
-                }))
-              }
-            />
-          </label>
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.fieldHeader}>
-            <h2>Fields</h2>
-            {formData.status !== "PUBLISHED" && (
-              <div className={styles.fieldControls}>
-                <select
-                  className={styles.select}
-                  value={newFieldType}
-                  onChange={(event) => setNewFieldType(event.target.value)}
-                >
-                  {Object.keys(fieldConfigurations).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  className={styles.secondaryButton}
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      fields: [
-                        ...prev.fields,
-                        {
-                          id: crypto.randomUUID(),
-                          label: "",
-                          type: newFieldType,
-                        },
-                      ],
-                    }))
-                  }
-                >
-                  Add field
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={[
-              styles.fieldContainer,
-              formData.status === "PUBLISHED"
-                ? styles.readonlyFieldContainer
-                : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-          >
-            <DndContext
-              onDragEnd={handleFieldDragEnd}
-              collisionDetection={closestCenter}
-            >
-              {formData.fields.map((field) => (
-                <FieldRow
-                  key={field.id}
-                  field={field}
-                  isDisabled={formData.status === "PUBLISHED"}
-                  onLabelChange={(value) =>
-                    handleFieldLabelChange(field.id, value)
-                  }
-                  onRemove={() => handleFieldRemove(field.id)}
-                />
-              ))}
-            </DndContext>
-          </div>
-        </div>
-
-        {formData.status !== "PUBLISHED" && (
-          <div className={styles.buttonContainer}>
-            <button
-              type="button"
-              className={styles.secondaryButton}
-              onClick={handleCreateDraft}
-            >
-              Save draft
-            </button>
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={handleCreateForm}
-            >
-              Publish
-            </button>
-          </div>
-        )}
-      </div>
+      {currentUser?.role === "ADMIN" ? (
+        <FormDetailAdminContent
+          formData={formData}
+          setFormData={setFormData}
+          newFieldType={newFieldType}
+          setNewFieldType={setNewFieldType}
+          onFieldDragEnd={handleFieldDragEnd}
+          onFieldLabelChange={handleFieldLabelChange}
+          onFieldRemove={handleFieldRemove}
+          onFieldConditionsChange={handleFieldConditionsChange}
+          onCreateDraft={handleCreateDraft}
+          onPublishForm={handleCreateForm}
+          fieldConfigurations={fieldConfigurations}
+          styles={styles}
+        />
+      ) : (
+        <FormDetailEmployeeContent
+          formData={formData}
+          styles={styles}
+          onSubmit={handleSubmitForm}
+        />
+      )}
     </div>
   );
 }

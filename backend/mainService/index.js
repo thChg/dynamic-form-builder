@@ -1,11 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 const { z } = require("zod");
+const swaggerUi = require("swagger-ui-express");
 const { requestLogger } = require("./helpers/middlewares/logger");
 const errorHandler = require("./helpers/middlewares/errorHandler");
-const validateRequest = require("./helpers/middlewares/validateRequest");
+const { validateRequest } = require("./helpers/middlewares/validateRequest");
 const { prisma } = require("./helpers/database/prismaClient");
 const formRoute = require("./routes/formRoute");
+const { swaggerSpec } = require("./swagger");
 
 const app = express();
 const MAIN_SERVICE_PORT = process.env.MAIN_SERVICE_PORT || 3001;
@@ -15,6 +17,8 @@ app.use(cors({ origin: `http://localhost:${FRONTEND_PORT}` }));
 
 app.use(requestLogger);
 app.use(express.json());
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const fieldInputSchema = z.object({
   label: z.string().min(1),

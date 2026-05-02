@@ -17,7 +17,6 @@ const registerController = async (req, res) => {
 
     let newUser = { email, password: hashedPassword, role };
     newUser.adminId = role === "EMPLOYEE" ? userId : null;
-    newUser.role = "ADMIN";
 
     await prisma.user.create({
       data: newUser,

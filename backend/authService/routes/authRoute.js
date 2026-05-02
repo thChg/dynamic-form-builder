@@ -2,9 +2,9 @@ const authenticateToken = require("../helpers/middlewares/authenticate");
 const {
   registerController,
   loginController,
-  userInfoController
+  userInfoController,
 } = require("../controllers/authControllers");
-const validateRequest = require("../helpers/middlewares/validateRequest");
+const { validateRequest } = require("../helpers/middlewares/validateRequest");
 const {
   UserRegisterSchema,
   UserLoginSchema,

@@ -2,6 +2,7 @@ import { DndContext, closestCenter } from "@dnd-kit/core";
 import { useState, useEffect, useRef } from "react";
 import styles from "./FormsScreen.module.css";
 import ThemeToggleButton from "../components/ThemeToggleButton.jsx";
+import LogoutButton from "../components/LogoutButton.jsx";
 import FormCard from "../components/FormCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import FormError from "../components/Error.jsx";
@@ -167,24 +168,30 @@ function FormsScreen() {
               {isEditMode ? (isSaving ? "Saving..." : "Save") : "Edit mode"}
             </button>
           ) : null}
+          {isAdmin ? (
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => navigate("/forms/new")}
+            >
+              New form
+            </button>
+          ) : null}
+          {!isAdmin ? (
+            <button
+              type="button"
+              className={styles.editToggle}
+              onClick={() => navigate("/forms/submissions")}
+            >
+              See all submissions
+            </button>
+          ) : null}
           <ThemeToggleButton />
+          <LogoutButton />
         </div>
       </header>
 
-      <section className={styles.actions}>
-        <input
-          className={styles.search}
-          type="search"
-          placeholder="Search forms"
-        />
-        <button
-          type="button"
-          className={styles.primaryButton}
-          onClick={() => navigate("/forms/new")}
-        >
-          New form
-        </button>
-      </section>
+      <div className={styles.divider} />
 
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         {isAdmin ? (
@@ -207,6 +214,7 @@ function FormsScreen() {
                 />
               ))}
             </section>
+            <div className={styles.divider} />
           </section>
         ) : null}
 
@@ -231,6 +239,7 @@ function FormsScreen() {
           </section>
         </section>
       </DndContext>
+      <div className={styles.divider} />
     </div>
   );
 }

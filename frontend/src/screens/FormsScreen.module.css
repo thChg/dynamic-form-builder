@@ -21,6 +21,11 @@
   gap: 12px;
 }
 
+.divider {
+  height: 1px;
+  background: var(--border);
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -60,7 +65,7 @@
   background: linear-gradient(120deg, #f97316, #f43f5e);
   color: #fff;
   font-weight: 700;
-  padding: 12px 18px;
+  padding: 11px 18px;
   border-radius: 999px;
   cursor: pointer;
 }

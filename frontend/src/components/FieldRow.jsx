@@ -110,6 +110,24 @@ function FieldRow({
           ⋮⋮
         </button>
       </div>
+      {Object.keys(field.conditions || {}).length > 0 && (
+        <div className={styles.conditionsDisplay}>
+          {Object.entries(field.conditions).map(([key, value]) => (
+            <div key={key} className={styles.conditionItem}>
+              <span className={styles.conditionKey}>{key}:</span>
+              <span className={styles.conditionValue}>
+                {typeof value === "boolean"
+                  ? value
+                    ? "Yes"
+                    : "No"
+                  : Array.isArray(value)
+                    ? JSON.stringify(value)
+                    : String(value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
       {isConditionModalOpen && (
         <FieldConditionModal
           field={field}

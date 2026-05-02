@@ -20,6 +20,7 @@ model Field {
   order     Int
   formId    Int
   form      Form    @relation(fields: [formId], references: [id])
+  responses FieldResponse[]
 }
 
 model Form {
@@ -30,4 +31,22 @@ model Form {
   fields      Field[]
   status      Status  @default(DRAFT)
   ownerId     Int
+  submissions  Submission[]
+}
+
+model Submission {
+  id        Int     @id @default(autoincrement())
+  formId    Int
+  form      Form    @relation(fields: [formId], references: [id])
+  createdAt DateTime @default(now())
+  responses  FieldResponse[]
+}
+
+model FieldResponse {
+  id           Int     @id @default(autoincrement())
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id])
+  fieldId      Int
+  field        Field    @relation(fields: [fieldId], references: [id])
+  value        String
 }
