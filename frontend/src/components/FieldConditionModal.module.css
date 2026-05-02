@@ -1,0 +1,146 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--bg);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-h);
+}
+
+.closeButton {
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--text);
+  text-align: center;
+}
+
+.conditionsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  color: var(--text-h);
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.saveButton {
+  border: none;
+  background: linear-gradient(120deg, #f97316, #f43f5e);
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.conditionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.requiredRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conditionRow label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+  text-transform: capitalize;
+}
+
+.conditionRow input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.conditionRow input[type="checkbox"] + span {
+  font-size: 14px;
+  color: var(--text-h);
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.conditionRow input[type="text"],
+.conditionRow input[type="number"],
+.conditionRow input[type="date"],
+.conditionRow textarea {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  color: var(--text-h);
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: inherit;
+}
+
+.conditionRow input[type="text"]:focus,
+.conditionRow input[type="number"]:focus,
+.conditionRow input[type="date"]:focus,
+.conditionRow textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+}

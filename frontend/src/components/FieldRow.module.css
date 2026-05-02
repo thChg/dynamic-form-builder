@@ -1,0 +1,113 @@
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.fieldRowDragging {
+  opacity: 0.7;
+  box-shadow: 0 12px 24px rgba(15, 18, 24, 0.16);
+}
+
+.fieldRowOver {
+  border-color: color-mix(in srgb, var(--text-h) 35%, var(--border));
+}
+
+.input {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-h);
+  outline: none;
+}
+
+.fieldMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dragHandle {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  color: var(--text);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  padding: 6px 8px;
+  border-radius: 10px;
+  cursor: grab;
+  line-height: 1;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.fieldType {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+
+.conditionButton {
+  border: 1px solid color-mix(in srgb, #3b82f6 50%, transparent);
+  background: color-mix(in srgb, #3b82f6 12%, transparent);
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.conditionButton:not(:disabled):hover {
+  background: color-mix(in srgb, #3b82f6 20%, transparent);
+  border-color: #3b82f6;
+}
+
+.conditionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.removeButton {
+  border: 1px solid color-mix(in srgb, #ef4444 50%, transparent);
+  background: color-mix(in srgb, #ef4444 12%, transparent);
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.removeIcon {
+  width: 16px;
+  height: 16px;
+}

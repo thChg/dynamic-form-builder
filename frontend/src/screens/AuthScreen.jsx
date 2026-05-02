@@ -2,10 +2,12 @@ import styles from "./AuthScreen.module.css";
 import ThemeToggleButton from "../components/ThemeToggleButton.jsx";
 import { useState } from "react";
 import { login } from "../apis/authServiceApi.js";
-import FormError from "../components/FormError.jsx";
+import Error from "../components/Error.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 function AuthScreen() {
+  const navigate = useNavigate();
   const { setAuthToken, setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,12 +21,9 @@ function AuthScreen() {
       const { token, user } = response.data;
       setAuthToken(token);
       setUser(user);
+      navigate("/forms");
     } catch (error) {
-      const message =
-        error?.response?.data?.message ||
-        error?.response?.data?.title ||
-        error?.message ||
-        "Login failed";
+      const message = error.response.data.message;
       setErrorMessage(message);
     }
   };
@@ -40,7 +39,7 @@ function AuthScreen() {
           <p>Sign in to manage your workspaces.</p>
         </div>
         <form className={styles.loginForm} onSubmit={onLoginSubmit}>
-          <FormError message={errorMessage} />
+          <Error message={errorMessage} />
           <label className={styles.field}>
             Work email
             <input
@@ -68,9 +67,6 @@ function AuthScreen() {
             Sign in
           </button>
         </form>
-        <p className={styles.footnote}>
-          New here? <button type="button">Create an account</button>
-        </p>
       </section>
     </div>
   );
