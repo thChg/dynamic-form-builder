@@ -9,7 +9,7 @@ const UserRegisterSchema = z.object({
     })
     .min(6, "Password must be at least 6 characters long")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
-  role: z.enum(["USER", "ADMIN"], "Role must be either USER or ADMIN"),
+  role: z.enum(["EMPLOYEE", "ADMIN"], "Role must be either USER or ADMIN"),
   adminID: z.number().optional().nullable(),
 });
 

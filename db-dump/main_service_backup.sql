@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict MMjrYAmQrYYRHEn82TzwkJAFnKeLd1CW4v8JvHVw7Jg5LPb49uFFOtwYz1PpZjM
+\restrict cPhiwTNtVKnlYws7zcl7JMvwIcJr2EIOTkcZBMlXPz4t40IDPkPQ7tp1T8UbxJa
 
 -- Dumped from database version 16.13
 -- Dumped by pg_dump version 16.13
@@ -25,6 +25,9 @@ SET row_security = off;
 COPY public."Form" (id, title, description, "order", status, "ownerId") FROM stdin;
 3	full test	Thân chào bạn Hoàng Thiên Trường,\n\nTopCV cảm ơn bạn đã quan tâm đến chương trình Next Gen 2026 của chúng tôi. Chúng tôi rất vui mừng thông báo bạn đã vượt qua vòng xét duyệt hồ sơ và muốn gửi đến bạn bài đánh giá năng lực như bên dưới.	0	PUBLISHED	2
 4	test	test	1	PUBLISHED	2
+10	ANOTHER DRAFT	draft 2 testing drag and drop	0	PUBLISHED	13
+8	ADMIN 2 FORM	To employee 2 and other employees under this admin	1	PUBLISHED	13
+9	ADMIN 2 DRAFT	draft	0	DRAFT	13
 \.
 
 
@@ -45,6 +48,12 @@ COPY public."Field" (id, label, type, conditions, "order", "formId") FROM stdin;
 22	date label	date	{"minDate": "2026-05-16T00:00:00.000Z"}	3	4
 23	color label	color	{"required": true}	4	4
 24	select label	select	{"options": "[\\"1\\", \\"2\\", \\"3\\"]", "required": true}	5	4
+34	Gift	select	{"options": "[\\"Pen\\", \\"Book\\", \\"Laptop\\"]", "required": true}	0	8
+35	Color	color	{}	1	8
+36	field 1	text	{}	0	9
+37	field 2	text	{}	1	9
+38	dating	date	{}	0	10
+39	dating datin	date	{"maxDate": "2026-05-16T00:00:00.000Z"}	1	10
 \.
 
 
@@ -54,6 +63,8 @@ COPY public."Field" (id, label, type, conditions, "order", "formId") FROM stdin;
 
 COPY public."Submission" (id, "formId", "createdAt") FROM stdin;
 2	4	2026-05-02 19:58:19.653
+4	8	2026-05-02 21:43:03.641
+5	10	2026-05-02 21:43:23.964
 \.
 
 
@@ -68,6 +79,10 @@ COPY public."FieldResponse" (id, "submissionId", "fieldId", value) FROM stdin;
 10	2	22	3344-03-22
 11	2	23	#3a0e0e
 12	2	24	1
+17	4	34	Pen
+18	4	35	#621d1d
+19	5	38	2026-05-10
+20	5	39	2026-05-08
 \.
 
 
@@ -84,33 +99,33 @@ b8839764-b487-423a-bf1f-55df1f2e1ac1	b67f25dcc4c9f5bf1fc9bc59e8079f065f253bd247a
 -- Name: FieldResponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chuong
 --
 
-SELECT pg_catalog.setval('public."FieldResponse_id_seq"', 16, true);
+SELECT pg_catalog.setval('public."FieldResponse_id_seq"', 20, true);
 
 
 --
 -- Name: Field_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chuong
 --
 
-SELECT pg_catalog.setval('public."Field_id_seq"', 33, true);
+SELECT pg_catalog.setval('public."Field_id_seq"', 39, true);
 
 
 --
 -- Name: Form_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chuong
 --
 
-SELECT pg_catalog.setval('public."Form_id_seq"', 7, true);
+SELECT pg_catalog.setval('public."Form_id_seq"', 10, true);
 
 
 --
 -- Name: Submission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: chuong
 --
 
-SELECT pg_catalog.setval('public."Submission_id_seq"', 3, true);
+SELECT pg_catalog.setval('public."Submission_id_seq"', 5, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict MMjrYAmQrYYRHEn82TzwkJAFnKeLd1CW4v8JvHVw7Jg5LPb49uFFOtwYz1PpZjM
+\unrestrict cPhiwTNtVKnlYws7zcl7JMvwIcJr2EIOTkcZBMlXPz4t40IDPkPQ7tp1T8UbxJa
 
