@@ -5,6 +5,7 @@ const { requestLogger } = require("./helpers/middlewares/logger");
 const errorHandler = require("./helpers/middlewares/errorHandler");
 const validateRequest = require("./helpers/middlewares/validateRequest");
 const { prisma } = require("./helpers/database/prismaClient");
+const formRoute = require("./routes/formRoute");
 
 const app = express();
 const MAIN_SERVICE_PORT = process.env.MAIN_SERVICE_PORT || 3001;
@@ -61,6 +62,8 @@ app.post(
     }
   },
 );
+
+app.use("/forms", formRoute);
 
 app.use(errorHandler);
 

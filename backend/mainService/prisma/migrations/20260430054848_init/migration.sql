@@ -1,12 +1,14 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('DRAFT', 'PUBLISHED', 'DELETED');
+
 -- CreateTable
 CREATE TABLE "Field" (
     "id" SERIAL NOT NULL,
     "label" TEXT NOT NULL,
     "type" TEXT NOT NULL,
-    "required" BOOLEAN NOT NULL,
-    "options" TEXT,
+    "conditions" JSONB,
+    "order" INTEGER NOT NULL,
     "formId" INTEGER NOT NULL,
-
     CONSTRAINT "Field_pkey" PRIMARY KEY ("id")
 );
 
@@ -15,6 +17,9 @@ CREATE TABLE "Form" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
+    "order" INTEGER NOT NULL,
+    "status" "Status" NOT NULL DEFAULT 'DRAFT',
+    "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Form_pkey" PRIMARY KEY ("id")
 );
