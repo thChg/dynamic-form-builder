@@ -2,6 +2,7 @@ const authenticateToken = require("../helpers/middlewares/authenticate");
 const {
   registerController,
   loginController,
+  userInfoController
 } = require("../controllers/authControllers");
 const validateRequest = require("../helpers/middlewares/validateRequest");
 const {
@@ -19,5 +20,7 @@ route.post(
 );
 
 route.post("/login", validateRequest(UserLoginSchema), loginController);
+
+route.get("/user-info", authenticateToken, userInfoController);
 
 module.exports = route;

@@ -71,7 +71,32 @@ const loginController = async (req, res) => {
   }
 };
 
+const userInfoController = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        adminId: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    res.json(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 module.exports = {
   registerController,
   loginController,
+  userInfoController
 };
