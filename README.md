@@ -109,18 +109,17 @@ docker compose exec auth-service npx prisma migrate deploy
 To load pre-existing data from the SQL dump folder:
 
 ```bash
-# Copy dump file to container's temp folder
-docker cp db-dump/main_service_backup.sql db:/tmp/main_service_backup.sql
-docker cp db-dump/auth_service_backup.sql db:/tmp/auth_service_backup.sql
-
-# Restore data using psql (within the container)
-docker exec db psql -U ${POSTGRES_USER} -d main_service < /tmp/main_service_backup.sql
-docker exec db psql -U ${POSTGRES_USER} -d auth_service < /tmp/auth_service_backup.sql
+# Restore data by streaming each dump into psql
+docker exec -i db psql -U ${POSTGRES_USER} -d main_service < db-dump/main_service_backup.sql
+docker exec -i db psql -U ${POSTGRES_USER} -d auth_service < db-dump/auth_service_backup.sql
 ```
+
+If you have not created the databases yet, create `main_service` and `auth_service` before running the restore commands.
 
 If you prefer to restore via direct container access:
 
 ```bash
+docker cp db-dump/main_service_backup.sql db:/tmp/main_service_backup.sql
 docker exec -it db psql -U ${POSTGRES_USER} -d main_service
 \i /tmp/main_service_backup.sql
 \q
