@@ -104,7 +104,29 @@ docker compose exec main-service npx prisma migrate deploy
 docker compose exec auth-service npx prisma migrate deploy
 ```
 
-### 3) Open app
+### 3) Restore Data from SQL Dumps (Optional)
+
+To load pre-existing data from the SQL dump folder:
+
+```bash
+# Copy dump file to container's temp folder
+docker cp db-dump/main_service_backup.sql db:/tmp/main_service_backup.sql
+docker cp db-dump/auth_service_backup.sql db:/tmp/auth_service_backup.sql
+
+# Restore data using psql (within the container)
+docker exec db psql -U ${POSTGRES_USER} -d main_service < /tmp/main_service_backup.sql
+docker exec db psql -U ${POSTGRES_USER} -d auth_service < /tmp/auth_service_backup.sql
+```
+
+If you prefer to restore via direct container access:
+
+```bash
+docker exec -it db psql -U ${POSTGRES_USER} -d main_service
+\i /tmp/main_service_backup.sql
+\q
+```
+
+### 4) Open app
 
 - Frontend: `http://localhost:${VITE_PORT}` (default `http://localhost:5173`)
 - Gateway base API: `http://localhost:${GATEWAY_PORT}` (default `http://localhost:3000`)
